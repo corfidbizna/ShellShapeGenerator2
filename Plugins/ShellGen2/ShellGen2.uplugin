@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "ShellGen2",
+	"Description": "Implements the second Shell Generator algorithm. (The first one was linear convolution based, the second one is \"math based\" and much more flexible.)",
+	"Category": "Other",
+	"CreatedBy": "Solra Bizna",
+	"CreatedByURL": "https://github.com/SolraBizna",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "ShellGen2",
+			"Type": "Runtime",
+			"LoadingPhase": "PreLoadingScreen"
+		}
+	]
+}
