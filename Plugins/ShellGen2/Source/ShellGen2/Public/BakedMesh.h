@@ -5,8 +5,8 @@
 #include <memory>
 #include "BakedMesh.generated.h"
 
-USTRUCT(BlueprintType)
-struct FBakedMesh {
+USTRUCT(BlueprintType, Category = "Shell Shape Generator")
+struct SHELLGEN2_API FBakedMesh {
   GENERATED_BODY()
   std::shared_ptr<std::vector<float> > vertices;
   std::shared_ptr<std::vector<float> > texcoords;

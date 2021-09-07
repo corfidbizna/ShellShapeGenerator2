@@ -11,10 +11,9 @@
  * the PROPORTION of the control point's "magnitude" that the anti-tangent
  * control point has.
  */
-UCLASS(BlueprintType, Category = "Shell Shape Generator")
-class SHELLGEN2_API UCurveNode : public UObject {
+USTRUCT(BlueprintType, Category = "Shell Shape Generator")
+struct SHELLGEN2_API FCurveNode {
   GENERATED_BODY()
- public:
   /**
    * The anchor point. This is a point through which the curve passes.
    */
