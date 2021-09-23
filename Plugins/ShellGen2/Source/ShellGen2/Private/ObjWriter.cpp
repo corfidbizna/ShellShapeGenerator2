@@ -41,22 +41,21 @@ void UObjWriter::OutputObjFile(const TArray<FString>& comments,
     auto& texcoords = *mesh.texcoords;
     if(m < transforms.Num()) {
       auto& transform = transforms[m];
-      for(unsigned int n = 0; n+2 < vertices.size(); n += 3) {
-        FVector in(vertices[n], vertices[n+1],
-                   vertices[n+2]);
+      for(unsigned int n = 0; n < vertices.size(); ++n) {
+        FVector& in = vertices[n];
         FVector out = TransformVector(transform, in);
         o << "v " << out.X << " " << out.Y << " " << out.Z << "\n";
       }
     }
     else {
-      for(unsigned int n = 0; n+2 < vertices.size(); n += 3) {
-        o << "v " << vertices[n] << " " << vertices[n+1] << " "
-          << vertices[n+2] << "\n";
+      for(unsigned int n = 0; n < vertices.size(); ++n) {
+        FVector& in = vertices[n];
+        o << "v " << in.X << " " << in.Y << " " << in.Z << "\n";
       }
     }
     o << "\n# Texture coordinates\n";
-    for(unsigned int n = 0; n+1 < texcoords.size(); n += 2) {
-      o << "vt " << texcoords[n] << " " << texcoords[n+1] << "\n";
+    for(unsigned int n = 0; n < texcoords.size(); ++n) {
+      o << "vt " << texcoords[n].X << " " << texcoords[n].Y << "\n";
     }
     o << "\n# Faces\n";
     for(unsigned int n = 0; n+2 < indices.size(); n += 3) {

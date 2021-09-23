@@ -28,4 +28,5 @@ struct SHELLGEN2_API FCurveNode {
    * exact shape of the curve, without permitting discontinuities.
    */
   UPROPERTY(meta=(ClampMin="0",ClampMax="99")) float virtual_proportion;
+  FVector2D get_virtual() const { return anchor - (control - anchor); }
 };

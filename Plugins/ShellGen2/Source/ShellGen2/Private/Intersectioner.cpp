@@ -61,15 +61,18 @@ namespace {
                                          float plane_z,
                                          int32 i1, int32 i2, int32 i3) {
     auto& vertices = *mesh.vertices;
-    float x1 = vertices[i1];
-    float y1 = vertices[i1+1];
-    float z1 = vertices[i1+2] - plane_z;
-    float x2 = vertices[i2];
-    float y2 = vertices[i2+1];
-    float z2 = vertices[i2+2] - plane_z;
-    float x3 = vertices[i3];
-    float y3 = vertices[i3+1];
-    float z3 = vertices[i3+2] - plane_z;
+    auto& v1 = vertices[i1];
+    auto& v2 = vertices[i2];
+    auto& v3 = vertices[i3];
+    float x1 = v1.X;
+    float y1 = v1.Y;
+    float z1 = v1.Z - plane_z;
+    float x2 = v2.X;
+    float y2 = v2.Y;
+    float z2 = v2.Z - plane_z;
+    float x3 = v3.X;
+    float y3 = v3.Y;
+    float z3 = v3.Z - plane_z;
     if(z1 < 0.0f) {
       if(z2 < 0.0f) {
         if(z3 < 0.0f) {
@@ -150,8 +153,8 @@ void UIntersectioner::GetSelfIntersectionsOnPlane(const FBakedMesh& mesh,
   auto& indices = *mesh.indices;
   for(unsigned int n = 0; n + 2 < indices.size(); n += 3) {
     process_triangle_for_intersection(mesh, output, lines, plane_z,
-                                      indices[n]*3, indices[n+1]*3,
-                                      indices[n+2]*3);
+                                      indices[n], indices[n+1],
+                                      indices[n+2]);
   }
 }
 
