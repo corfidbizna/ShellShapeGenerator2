@@ -515,3 +515,6 @@ float shell_params::get_tube_center_d(float theta) const {
   return get_spiral_radius(theta) + get_tube_normal_radius(theta);
 }
 
+UShellGenerator* UShellGenerator::MakeShellGenerator() {
+  return NewObject<UShellGenerator>();
+}

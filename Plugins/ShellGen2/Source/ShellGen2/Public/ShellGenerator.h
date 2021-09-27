@@ -94,6 +94,11 @@ class SHELLGEN2_API UShellGenerator : public UObject {
   UShellGenerator() {}
   virtual ~UShellGenerator();
   /**
+   * Make a new Shell Generator.
+   */
+  UFUNCTION(BlueprintCallable, Category = "Shell Shape Generator")
+  static UShellGenerator* MakeShellGenerator();
+  /**
    * Begin generating a shell with the given parameters. Any in-progress shell
    * generation process will be abandoned, though the last finished shell will
    * continue to be accessible.
