@@ -17,16 +17,17 @@ struct SHELLGEN2_API FCurveNode {
   /**
    * The anchor point. This is a point through which the curve passes.
    */
-  UPROPERTY() FVector2D anchor;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite) FVector2D anchor;
   /**
    * The control point. This is a point toward which the curve bends.
    */
-  UPROPERTY() FVector2D control;
+  UPROPERTY(EditAnywhere, BlueprintReadWrite) FVector2D control;
   /**
    * The magnitude of the anti-tangent control point, as a proportion of the
    * magnitude of the tangent control point. This allows more control over the
    * exact shape of the curve, without permitting discontinuities.
    */
-  UPROPERTY(meta=(ClampMin="0",ClampMax="99")) float virtual_proportion;
+  UPROPERTY(meta=(ClampMin="0",ClampMax="99"),
+	    EditAnywhere, BlueprintReadWrite) float virtual_proportion;
   FVector2D get_virtual() const { return anchor - (control - anchor); }
 };
