@@ -149,7 +149,7 @@ class SHELLGEN2_API UShellGenerator : public UObject {
      float binormal_growth_aperture,
      UPARAM(DisplayName="Aperture umbilical radius per 180°")
      float spiral_growth_aperture,
-     UPARAM(DisplayName="Current age (% of final)")
+     UPARAM(DisplayName="Current age (fraction of final)")
      float current_age,
      UPARAM(DisplayName="Final age (in 180° units)")
      float final_age,
