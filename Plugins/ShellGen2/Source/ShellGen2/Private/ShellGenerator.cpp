@@ -434,13 +434,16 @@ void shell_params::build_shell_at(FBakedMesh& mesh,
   float theta_radians = theta * -PI;
   float c = cos(theta_radians);
   float s = sin(theta_radians);
-  FVector4 transform_x(-tube_rad * c, 0.f, tube_rad * s, spiral_rad * c);
-  FVector4 transform_y(-tube_rad * s, 0.f, -tube_rad * c, spiral_rad * s);
-  FVector4 transform_z(0.f, tube_width, 0.f, 0.f);
+  float xplus = spiral_rad * c;
+  float yplus = spiral_rad * s;
+  FVector transform_x(-tube_rad * c, 0.f, tube_rad * s);
+  FVector transform_y(-tube_rad * s, 0.f, -tube_rad * c);
+  FVector transform_z(0.f, tube_width, 0.f);
   float v_mul = 1.f / (curve->size() / 2);
   for(unsigned int i = 0; i < curve->size(); ++i) {
     const auto& in = (*curve)[i];
-    mesh.vertices->emplace_back(in | transform_x, in | transform_y,
+    mesh.vertices->emplace_back((in | transform_x) + xplus,
+				(in | transform_y) + yplus,
 				in | transform_z);
     float v = i * v_mul;
     if(v > 1.f) v -= 2.f; // not >=
