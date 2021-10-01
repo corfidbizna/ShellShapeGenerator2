@@ -331,6 +331,7 @@ void bg_gen_state::bg_thread_func() {
     std::unique_lock<std::mutex> lock(mutex);
     last_baked_mesh = mesh;
     finished_generation = cur_generation;
+    all_done.notify_all();
   }
 }
 
