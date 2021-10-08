@@ -16,7 +16,13 @@ void UObjWriter::OutputObjFile(const TArray<FString>& comments,
   saving_succeeded = false;
   std::ostringstream o;
   for(auto& comment : comments) {
-    o << "#" << TCHAR_TO_UTF8(*comment) << "\n";
+    auto p = TCHAR_TO_UTF8(*comment);
+    o << "# ";
+    while(*p) {
+      if(*p == '\n') o << "\n# ";
+      o << *p++;
+    }
+    o << "\n";
   }
   size_t index_offset = 1;
   for(int m = 0; m < meshes.Num(); ++m) {
