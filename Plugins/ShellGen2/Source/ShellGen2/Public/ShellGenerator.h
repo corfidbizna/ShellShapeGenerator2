@@ -102,6 +102,14 @@ class SHELLGEN2_API UShellGenerator : public UObject {
    * Begin generating a shell with the given parameters. Any in-progress shell
    * generation process will be abandoned, though the last finished shell will
    * continue to be accessible.
+   *
+   * The endcap specifications give pairs of numbers. In each pair, the first
+   * number is a theta offset (where positive is always OLDER and
+   * negative is always YOUNGER) from whichever "end" of the shell it
+   * is applied to. The second number is a radius multiplier, where 1.0 is the
+   * exact radius the tube would have at that theta, 0.0 is a single point
+   * (this should be the first element of the young endcap and the last element
+   * of the old endcap).
    */
   UFUNCTION(BlueprintCallable, Category = "Shell Shape Generator")
   void BeginGeneratingShell
@@ -158,7 +166,7 @@ class SHELLGEN2_API UShellGenerator : public UObject {
      UPARAM(DisplayName="Endcap spec (old end)")
      TArray<FVector2D> old_endcaps,
      UPARAM(DisplayName="Distance per iteration")
-     float length_per_iteration,
+     float length_per_iteration = 0.1f,
      UPARAM(DisplayName="Curve subdivision iterations")
      int curve_subdivision = 4
      );

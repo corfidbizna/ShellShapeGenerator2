@@ -290,19 +290,27 @@ void bg_gen_state::bg_thread_func() {
     mesh.indices = std::make_shared<std::vector<uint32_t>>();
     first_segment_attached = false;
     last_segment_is_full = true;
-    // TODO: parametrize curve depth
-    auto young_curve = smoosh_curves(p.young_cross, p.young_grain, 4);
-    auto old_curve = smoosh_curves(p.old_cross, p.old_grain, 4);
-    auto aperture_curve = smoosh_curves(p.aperture_cross, p.aperture_grain, 4);
+    auto young_curve = smoosh_curves(p.young_cross, p.young_grain, p.curve_subdivision);
+    auto old_curve = smoosh_curves(p.old_cross, p.old_grain, p.curve_subdivision);
+    auto aperture_curve = smoosh_curves(p.aperture_cross, p.aperture_grain, p.curve_subdivision);
     assert(young_curve.size() == old_curve.size());
     assert(aperture_curve.size() == old_curve.size());
     std::vector<FVector> temp;
     temp.reserve(young_curve.size());
-    // TODO: array
-    p.point_at(mesh, -0.035f);
-    attach_shell_segment(mesh, false, young_curve.size());
+    for(int i = 0; i < p.young_endcaps.Num(); ++i) {
+      const auto& v = p.young_endcaps[i];
+      if(v.Y <= 0.0f) {
+	p.point_at(mesh, v.X);
+	attach_shell_segment(mesh, false, young_curve.size());
+      }
+      else {
+	p.build_shell_at(mesh, young_curve, old_curve, aperture_curve, temp,
+			 v.X, v.Y);
+	attach_shell_segment(mesh, true, young_curve.size());
+      }
+    }
     float target_age = p.final_age * p.current_age;
-    float theta = 0.1f; // TODO: 0.0f?
+    float theta = 0.0f;
     while(theta < target_age) {
       p.build_shell_at(mesh, young_curve, old_curve, aperture_curve, temp,
 		       theta, 1.f);
@@ -310,24 +318,18 @@ void bg_gen_state::bg_thread_func() {
       float buff = fmax(p.length_per_iteration / fmax(1.f, p.get_tube_center_d(theta)), 0.01f);
       theta += buff;
     }
-    // TODO: array
-    p.build_shell_at(mesh, young_curve, old_curve, aperture_curve, temp,
-		     target_age, 1.f);
-    attach_shell_segment(mesh, true, young_curve.size());
-    p.build_shell_at(mesh, young_curve, old_curve, aperture_curve, temp,
-		     target_age + 0.02f, 0.98f);
-    attach_shell_segment(mesh, true, young_curve.size());
-    p.build_shell_at(mesh, young_curve, old_curve, aperture_curve, temp,
-		     target_age, 0.92f);
-    attach_shell_segment(mesh, true, young_curve.size());
-    p.build_shell_at(mesh, young_curve, old_curve, aperture_curve, temp,
-		     target_age - 0.02f, 0.5f);
-    attach_shell_segment(mesh, true, young_curve.size());
-    p.build_shell_at(mesh, young_curve, old_curve, aperture_curve, temp,
-		     target_age - 0.03f, 0.20f);
-    attach_shell_segment(mesh, true, young_curve.size());
-    p.point_at(mesh, target_age - 0.035f);
-    attach_shell_segment(mesh, false, young_curve.size());
+    for(int i = 0; i < p.old_endcaps.Num(); ++i) {
+      const auto& v = p.old_endcaps[i];
+      if(v.Y <= 0.0f) {
+	p.point_at(mesh, target_age + v.X);
+	attach_shell_segment(mesh, false, young_curve.size());
+      }
+      else {
+	p.build_shell_at(mesh, young_curve, old_curve, aperture_curve, temp,
+			 target_age + v.X, v.Y);
+	attach_shell_segment(mesh, true, young_curve.size());
+      }
+    }
     std::unique_lock<std::mutex> lock(mutex);
     last_baked_mesh = mesh;
     finished_generation = cur_generation;
