@@ -19,8 +19,8 @@ void UObjWriter::OutputObjFile(const TArray<FString>& comments,
     auto p = TCHAR_TO_UTF8(*comment);
     o << "# ";
     while(*p) {
-      if(*p == '\n') o << "\n# ";
-      o << *p++;
+      if(*p == '\n') { o << "\n# "; ++p; }
+      else o << *p++;
     }
     o << "\n";
   }
