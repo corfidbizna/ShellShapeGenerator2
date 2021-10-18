@@ -26,6 +26,7 @@ public class ShellGen2 : ModuleRules
 			new string[]
 			{
 				"Core",
+				"MeshConversion",
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);

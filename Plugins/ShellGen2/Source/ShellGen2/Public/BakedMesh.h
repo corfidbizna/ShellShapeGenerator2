@@ -11,6 +11,7 @@ struct SHELLGEN2_API FBakedMesh {
   std::shared_ptr<std::vector<FVector> > vertices;
   std::shared_ptr<std::vector<FVector2D> > texcoords;
   std::shared_ptr<std::vector<uint32_t> > indices;
+  std::vector<FVector> calculate_normals() const;
   FBakedMesh() {}
   FBakedMesh(std::shared_ptr<std::vector<FVector> > vertices, std::shared_ptr<std::vector<FVector2D> > texcoords, std::shared_ptr<std::vector<uint32_t> > indices)
   : vertices(std::move(vertices)), texcoords(std::move(texcoords)), indices(std::move(indices)) {}
