@@ -32,9 +32,9 @@ UStaticMesh* UMakeStaticMeshLib::BakedMeshToStaticMesh(const FBakedMesh& in) {
   for(int32_t n = 0; n < indices.size(); n += 3) {
     // 0, 2, 1? yeah, to invert the winding, because apparently UE4 wants
     // clockwise winding because DirectX
-    builder.AppendTriangle(viid_map[indices[0]],
-			   viid_map[indices[2]],
-			   viid_map[indices[1]],
+    builder.AppendTriangle(viid_map[indices[n+0]],
+			   viid_map[indices[n+2]],
+			   viid_map[indices[n+1]],
 			   all_group);
   }
   UStaticMesh* ret = NewObject<UStaticMesh>();
