@@ -26,7 +26,6 @@ public class ShellGen2 : ModuleRules
 			new string[]
 			{
 				"Core",
-				"MeshConversion",
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -39,6 +38,9 @@ public class ShellGen2 : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
+				"MeshConversion",
+				"StaticMeshDescription",
+				"MeshDescription",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
