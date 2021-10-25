@@ -227,6 +227,7 @@ void UShellGenerator::BeginGeneratingShell
  float final_age,
  TArray<FVector2D> young_endcaps,
  TArray<FVector2D> old_endcaps,
+ TArray<float> radius_requests,
  float length_per_iteration,
  int curve_subdivision) {
   std::unique_lock<std::mutex> lock(bg.mutex);
@@ -258,6 +259,7 @@ void UShellGenerator::BeginGeneratingShell
   bg.desired_params.final_age = final_age;
   bg.desired_params.length_per_iteration = length_per_iteration;
   bg.desired_params.curve_subdivision = curve_subdivision;
+  bg.desired_params.radius_requests = radius_requests;
   bg.desired_params.young_endcaps = young_endcaps;
   bg.desired_params.old_endcaps = old_endcaps;
   bg.params_available = true;
@@ -297,6 +299,23 @@ void bg_gen_state::bg_thread_func() {
     assert(aperture_curve.size() == old_curve.size());
     std::vector<FVector> temp;
     temp.reserve(young_curve.size());
+    TArray<FRadiusInfo> radius_info;
+    radius_info.Reserve(p.radius_requests.Num());
+    for(auto theta : p.radius_requests) {
+      struct FRadiusInfo i;
+      i.spiral_radius = p.get_tube_center_d(theta);
+      i.tube_normal_radius = p.get_tube_normal_radius(theta);
+      i.tube_binormal_radius = p.get_tube_normal_radius(theta);
+      auto cross_section = p.curve_at(young_curve, old_curve, aperture_curve,
+				      temp, theta);
+      // hey, isn't it great that Unreal has its own equivalent to std::vector
+      // that isn't compatible at all? What a useful thing.
+      i.cross_section.Reserve(cross_section->size());
+      for(auto el : *cross_section) {
+	i.cross_section.Emplace(std::move(el));
+      }
+      radius_info.Emplace(std::move(i));
+    }
     for(int i = 0; i < p.young_endcaps.Num(); ++i) {
       const auto& v = p.young_endcaps[i];
       if(v.Y <= 0.0f) {
@@ -332,6 +351,7 @@ void bg_gen_state::bg_thread_func() {
     }
     std::unique_lock<std::mutex> lock(mutex);
     last_baked_mesh = mesh;
+    last_radius_info = radius_info;
     finished_generation = cur_generation;
     all_done.notify_all();
   }
@@ -342,15 +362,17 @@ bool UShellGenerator::IsGenerationStillInProgress() {
   return bg.finished_generation != bg.generation;
 }
 
-FBakedMesh UShellGenerator::TakeLastGeneratedShell() {
+FBakedMesh UShellGenerator::TakeLastGeneratedShell(TArray<FRadiusInfo>& i) {
   std::unique_lock<std::mutex> lock(bg.mutex);
+  i = bg.last_radius_info;
   return bg.last_baked_mesh;
 }
 
-FBakedMesh UShellGenerator::BlockForGeneratedShell() {
+FBakedMesh UShellGenerator::BlockForGeneratedShell(TArray<FRadiusInfo>& i) {
   std::unique_lock<std::mutex> lock(bg.mutex);
   while(bg.finished_generation != bg.generation)
     bg.all_done.wait(lock);
+  i = bg.last_radius_info;
   return bg.last_baked_mesh;
 }
 
@@ -399,12 +421,12 @@ void shell_params::point_at(FBakedMesh& mesh, float theta) const {
   mesh.texcoords->emplace_back(theta, 1);
 }
 
-void shell_params::build_shell_at(FBakedMesh& mesh,
-				  const std::vector<FVector>& young_curve,
-				  const std::vector<FVector>& old_curve,
-                                  const std::vector<FVector>& aperture_curve,
-                                  std::vector<FVector>& temp,
-                                  float theta, float scale) const {
+const std::vector<FVector>*
+shell_params::curve_at(const std::vector<FVector>& young_curve,
+		       const std::vector<FVector>& old_curve,
+		       const std::vector<FVector>& aperture_curve,
+		       std::vector<FVector>& temp,
+		       float theta) const {
   const std::vector<FVector>* curve;
   if(theta <= young_end) {
     curve = &young_curve;
@@ -431,6 +453,18 @@ void shell_params::build_shell_at(FBakedMesh& mesh,
   else {
     curve = &aperture_curve;
   }
+  return curve;
+}
+
+
+void shell_params::build_shell_at(FBakedMesh& mesh,
+				  const std::vector<FVector>& young_curve,
+				  const std::vector<FVector>& old_curve,
+                                  const std::vector<FVector>& aperture_curve,
+                                  std::vector<FVector>& temp,
+                                  float theta, float scale) const {
+  const std::vector<FVector>* curve = curve_at(young_curve, old_curve,
+					       aperture_curve, temp, theta);
   float tube_rad = get_tube_normal_radius(theta) * scale;
   float tube_width = get_tube_binormal_radius(theta) * scale;
   float spiral_rad = get_tube_center_d(theta);

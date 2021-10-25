@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "BakedMesh.h"
 #include "CurveNode.h"
+#include "RadiusInfo.h"
 #include "ShellGenerator.generated.h"
 
 // hey, Ma! come see all the internal state that got leaked into my public API
@@ -52,10 +53,16 @@ struct SHELLGEN2_API shell_params {
   Curve aperture_grain = Curve(CurveType::Flat);
   TArray<FVector2D> young_endcaps;
   TArray<FVector2D> old_endcaps;
+  TArray<float> radius_requests;
   float get_tube_normal_radius(float theta) const;
   float get_tube_binormal_radius(float theta) const;
   float get_spiral_radius(float theta) const;
   float get_tube_center_d(float theta) const;
+  const std::vector<FVector>* curve_at(const std::vector<FVector>& young_cross,
+				       const std::vector<FVector>& old_cross,
+				       const std::vector<FVector>& apert_cross,
+				       std::vector<FVector>& temp,
+				       float theta) const;
   void point_at(FBakedMesh& out, float theta) const;
   void build_shell_at(FBakedMesh& out,
 		      const std::vector<FVector>& young_cross,
@@ -70,6 +77,7 @@ struct SHELLGEN2_API bg_gen_state {
   std::mutex mutex;
   std::condition_variable new_to_process, all_done;
   FBakedMesh last_baked_mesh;
+  TArray<FRadiusInfo> last_radius_info;
   shell_params desired_params, cur_params;
   bool params_available = false;
   bool processing = false, quitting = false;
@@ -165,6 +173,8 @@ class SHELLGEN2_API UShellGenerator : public UObject {
      TArray<FVector2D> young_endcaps,
      UPARAM(DisplayName="Endcap spec (old end)")
      TArray<FVector2D> old_endcaps,
+     UPARAM(DisplayName="List of thetas to return radius information for")
+     TArray<float> radius_requests,
      UPARAM(DisplayName="Distance per iteration")
      float length_per_iteration = 0.1f,
      UPARAM(DisplayName="Curve subdivision iterations")
@@ -181,11 +191,11 @@ class SHELLGEN2_API UShellGenerator : public UObject {
    * Get the most recent generated shell.
    */
   UFUNCTION(BlueprintCallable, Category = "Shell Shape Generator")
-  FBakedMesh TakeLastGeneratedShell();
+  FBakedMesh TakeLastGeneratedShell(TArray<FRadiusInfo>& radius_info);
   /**
    * Get the latest generated shell, waiting (if necessary) for the current
    * in-progress generation process to complete.
    */
   UFUNCTION(BlueprintCallable, Category = "Shell Shape Generator")
-  FBakedMesh BlockForGeneratedShell();
+  FBakedMesh BlockForGeneratedShell(TArray<FRadiusInfo>& radius_info);
 };
