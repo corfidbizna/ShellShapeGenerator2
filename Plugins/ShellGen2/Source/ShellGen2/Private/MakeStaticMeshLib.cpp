@@ -38,6 +38,7 @@ UStaticMesh* UMakeStaticMeshLib::BakedMeshToStaticMesh(const FBakedMesh& in) {
 			   all_group);
   }
   UStaticMesh* ret = NewObject<UStaticMesh>();
+  ret->StaticMaterials.Add(FStaticMaterial());
   TArray<const FMeshDescription*> ugh;
   ugh.Emplace(&mdesc);
   ret->BuildFromMeshDescriptions(ugh);
