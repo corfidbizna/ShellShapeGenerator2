@@ -51,9 +51,9 @@ struct SHELLGEN2_API shell_params {
   Curve old_grain = Curve(CurveType::Flat);
   Curve aperture_cross = Curve(CurveType::Circle);
   Curve aperture_grain = Curve(CurveType::Flat);
-  TArray<FVector2D> young_endcaps;
-  TArray<FVector2D> old_endcaps;
-  TArray<float> radius_requests;
+  const TArray<FVector2D>& young_endcaps;
+  const TArray<FVector2D>& old_endcaps;
+  const TArray<float>& radius_requests;
   float get_tube_normal_radius(float theta) const;
   float get_tube_binormal_radius(float theta) const;
   float get_spiral_radius(float theta) const;

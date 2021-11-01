@@ -225,9 +225,9 @@ void UShellGenerator::BeginGeneratingShell
  float spiral_growth_aperture,
  float current_age,
  float final_age,
- TArray<FVector2D> young_endcaps,
- TArray<FVector2D> old_endcaps,
- TArray<float> radius_requests,
+ const TArray<FVector2D>& young_endcaps,
+ const TArray<FVector2D>& old_endcaps,
+ const TArray<float>& radius_requests,
  float length_per_iteration,
  int curve_subdivision) {
   std::unique_lock<std::mutex> lock(bg.mutex);
