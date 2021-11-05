@@ -51,9 +51,9 @@ struct SHELLGEN2_API shell_params {
   Curve old_grain = Curve(CurveType::Flat);
   Curve aperture_cross = Curve(CurveType::Circle);
   Curve aperture_grain = Curve(CurveType::Flat);
-  const TArray<FVector2D>& young_endcaps;
-  const TArray<FVector2D>& old_endcaps;
-  const TArray<float>& radius_requests;
+  TArray<FVector2D> young_endcaps;
+  TArray<FVector2D> old_endcaps;
+  TArray<float> radius_requests;
   float get_tube_normal_radius(float theta) const;
   float get_tube_binormal_radius(float theta) const;
   float get_spiral_radius(float theta) const;
@@ -170,11 +170,11 @@ class SHELLGEN2_API UShellGenerator : public UObject {
      UPARAM(DisplayName="Final age (in 180° units)")
      float final_age,
      UPARAM(DisplayName="Endcap spec (young end)")
-     TArray<FVector2D> young_endcaps,
+     const TArray<FVector2D>& young_endcaps,
      UPARAM(DisplayName="Endcap spec (old end)")
-     TArray<FVector2D> old_endcaps,
+     const TArray<FVector2D>& old_endcaps,
      UPARAM(DisplayName="List of thetas to return radius information for")
-     TArray<float> radius_requests,
+     const TArray<float>& radius_requests,
      UPARAM(DisplayName="Distance per iteration")
      float length_per_iteration = 0.1f,
      UPARAM(DisplayName="Curve subdivision iterations")
