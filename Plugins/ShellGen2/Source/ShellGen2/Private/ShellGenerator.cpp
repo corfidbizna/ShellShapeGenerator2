@@ -269,6 +269,7 @@ void UShellGenerator::BeginGeneratingShell
     thread = std::make_unique<std::thread>(&bg_gen_state::bg_thread_func, &bg);
   bg.new_to_process.notify_one();
   UE_LOG(LogTemp, Warning, TEXT("After lock, after copy: %u, %u, %u"), (unsigned int)young_endcaps.Num(), (unsigned int)old_endcaps.Num(), (unsigned int)radius_requests.Num());
+  UE_LOG(LogTemp, Warning, TEXT("And, finally, in the param-block: %u, %u, %u"), (unsigned int)bg.desired_params.young_endcaps.Num(), (unsigned int)bg.desired_params.old_endcaps.Num(), (unsigned int)bg.desired_params.radius_requests.Num());
 }
 
 void bg_gen_state::bg_thread_func() {
