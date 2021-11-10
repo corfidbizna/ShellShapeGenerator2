@@ -17,6 +17,10 @@ FBakedMesh UDistorter::ApplyDistortions(const FBakedMesh& mesh,
   const auto& indices = *mesh.indices;
   /* Calculate the normals for the mesh. */
   auto normals = mesh.calculate_normals();
+  if(normals.size() != vertices.size()) {
+    UE_LOG(LogTemp, Error, TEXT("Calculating normals went horribly wrong somehow! (Needed %u, got %u)"), (unsigned int)vertices.size(), (unsigned int)normals.size());
+    return mesh;
+  }
   /* Now, at each vertex... */
   auto new_vertices = std::make_shared<std::vector<FVector>>();
   new_vertices->reserve(vertices.size());
