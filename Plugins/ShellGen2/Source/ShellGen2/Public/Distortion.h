@@ -39,6 +39,11 @@ class SHELLGEN2_API UDistortion : public UObject {
      <UDistortion*,ComposeOperation> pairs, but I'm fairly sure that would
      confuse Unreal's object lifespan magic. */
   /**
+   * If true, the V texture coordinate will MIRROR at V=0. Otherwise, it will
+   * wrap normally.
+   */
+  UPROPERTY() bool WrapAtV = false;
+  /**
    * Other distortions to compose with this one.
    */
   UPROPERTY() TArray<UDistortion*> ComposeWith;
@@ -51,10 +56,7 @@ class SHELLGEN2_API UDistortion : public UObject {
   float sample(const FVector2D& uv) {
     const auto& png = Map->GetImage();
     auto uvscaled = uv * UVScale + UVOffset;
-    // hack to fix the seam along the centerline of the shell
-    // (call it "half-clamp")
-    if(uvscaled.X < 0.0f) uvscaled.X = 0.0f;
-    if(uvscaled.Y < 0.0f) uvscaled.Y = 0.0f;
+    if(WrapAtV && uvscaled.Y < 0.0f) uvscaled.Y *= -1.0f;
     auto sample = png->sample(uvscaled.X, uvscaled.Y);
     auto ret = sample * Magnitude + MagnitudeOffset;
     for(int i = 0; i < ComposeWith.Num(); ++i) {
