@@ -6,7 +6,8 @@ UDistortion* UDistortionLib::MakeDistortion(ULoadedGrayPNG* Map,
                                             FVector2D NumUVRepeats,
                                             FVector2D UVOffset,
                                             float Magnitude,
-                                            float MagnitudeOffset) {
+                                            float MagnitudeOffset,
+					    bool WrapAtV) {
   auto ret = NewObject<UDistortion>();
   ret->Map = Map;
   ret->UVScale = NumUVRepeats;
@@ -21,6 +22,7 @@ UDistortion* UDistortionLib::MakeDistortion(ULoadedGrayPNG* Map,
   }
   ret->Magnitude = Magnitude;
   ret->MagnitudeOffset = MagnitudeOffset;
+  ret->WrapAtV = WrapAtV;
   return ret;
 }
 
@@ -37,5 +39,6 @@ UDistortion* UDistortionLib::MakeComposedDistortion(UDistortion* a,
   ret->Operation = a->Operation;
   ret->ComposeWith.Add(b);
   ret->Operation.Add(op);
+  ret->WrapAtV = a->WrapAtV;
   return ret;
 }
