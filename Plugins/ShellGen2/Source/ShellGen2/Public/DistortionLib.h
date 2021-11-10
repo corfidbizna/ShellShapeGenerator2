@@ -6,7 +6,7 @@
 #include "DistortionLib.generated.h"
 
 UCLASS(meta=(BlueprintThreadSafe), Category = "Shell Shape Generator")
-class UDistortionLib : public UBlueprintFunctionLibrary {
+class SHELLGEN2_API UDistortionLib : public UBlueprintFunctionLibrary {
   GENERATED_UCLASS_BODY()
   /**
    * Create a new Distortion with the given displacement map, UV scale factors,

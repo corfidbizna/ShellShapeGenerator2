@@ -2,9 +2,12 @@
 
 std::vector<FVector> FBakedMesh::calculate_normals() const {
   std::vector<FVector> normals(vertices->size());
+  /* Unnecessary; zero values are default-inserted. */
+  /*
   for(auto&& n : normals) {
     n = FVector(0.0f);
   }
+  */
   /* For each triangle... */
   for(auto it = indices->cbegin(); it != indices->cend();) {
     /* (The three points of the triangle) */

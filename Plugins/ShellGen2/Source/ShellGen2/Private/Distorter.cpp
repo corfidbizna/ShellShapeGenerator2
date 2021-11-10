@@ -27,7 +27,7 @@ FBakedMesh UDistorter::ApplyDistortions(const FBakedMesh& mesh,
   for(auto index = 0; index < normals.size(); ++index) {
     auto v = vertices[index];
     auto& n = normals[index];
-    auto& uv = texcoords[index*2];
+    auto& uv = texcoords[index];
     /* For each distortion... */
     float amount = 0.0f;
     for(const auto& distortion : distorts) {
