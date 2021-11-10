@@ -230,9 +230,7 @@ void UShellGenerator::BeginGeneratingShell
  const TArray<float>& radius_requests,
  float length_per_iteration,
  int curve_subdivision) {
-  UE_LOG(LogTemp, Warning, TEXT("Before lock: %u, %u, %u"), (unsigned int)young_endcaps.Num(), (unsigned int)old_endcaps.Num(), (unsigned int)radius_requests.Num());
   std::unique_lock<std::mutex> lock(bg.mutex);
-  UE_LOG(LogTemp, Warning, TEXT("After lock, before copy: %u, %u, %u"), (unsigned int)young_endcaps.Num(), (unsigned int)old_endcaps.Num(), (unsigned int)radius_requests.Num());
   ++bg.generation;
   // oh boy
   bg.desired_params.starting_normal_rad = starting_normal_rad;
@@ -268,8 +266,6 @@ void UShellGenerator::BeginGeneratingShell
   if(thread == nullptr)
     thread = std::make_unique<std::thread>(&bg_gen_state::bg_thread_func, &bg);
   bg.new_to_process.notify_one();
-  UE_LOG(LogTemp, Warning, TEXT("After lock, after copy: %u, %u, %u"), (unsigned int)young_endcaps.Num(), (unsigned int)old_endcaps.Num(), (unsigned int)radius_requests.Num());
-  UE_LOG(LogTemp, Warning, TEXT("And, finally, in the param-block: %u, %u, %u"), (unsigned int)bg.desired_params.young_endcaps.Num(), (unsigned int)bg.desired_params.old_endcaps.Num(), (unsigned int)bg.desired_params.radius_requests.Num());
 }
 
 void bg_gen_state::bg_thread_func() {
@@ -284,7 +280,7 @@ void bg_gen_state::bg_thread_func() {
         }
         else {
           cur_generation = generation;
-	  cur_params = std::move(desired_params);
+	  cur_params = desired_params;
           break;
         }
       }
