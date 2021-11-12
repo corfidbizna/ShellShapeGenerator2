@@ -305,7 +305,7 @@ void bg_gen_state::bg_thread_func() {
       struct FRadiusInfo i;
       i.spiral_radius = p.get_tube_center_d(theta);
       i.tube_normal_radius = p.get_tube_normal_radius(theta);
-      i.tube_binormal_radius = p.get_tube_normal_radius(theta);
+      i.tube_binormal_radius = p.get_tube_binormal_radius(theta);
       auto cross_section = p.curve_at(young_curve, old_curve, aperture_curve,
 				      temp, theta);
       // hey, isn't it great that Unreal has its own equivalent to std::vector

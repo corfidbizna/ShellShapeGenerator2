@@ -56,7 +56,7 @@ class SHELLGEN2_API UDistortion : public UObject {
   float sample(const FVector2D& uv) {
     const auto& png = Map->GetImage();
     auto uvscaled = uv * UVScale + UVOffset;
-    if(WrapAtV && uvscaled.Y < 0.0f) uvscaled.Y *= -1.0f;
+    if(!WrapAtV && uvscaled.Y < 0.0f) uvscaled.Y *= -1.0f;
     auto sample = png->sample(uvscaled.X, uvscaled.Y);
     auto ret = sample * Magnitude + MagnitudeOffset;
     for(int i = 0; i < ComposeWith.Num(); ++i) {
