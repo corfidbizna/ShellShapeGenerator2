@@ -40,7 +40,7 @@ class SHELLGEN2_API UDistortion : public UObject {
      confuse Unreal's object lifespan magic. */
   /**
    * If true, the V texture coordinate will WRAP at V=0. Otherwise, it will
-   * wrap normally.
+   * mirror.
    */
   UPROPERTY() bool WrapAtV = false;
   /**
