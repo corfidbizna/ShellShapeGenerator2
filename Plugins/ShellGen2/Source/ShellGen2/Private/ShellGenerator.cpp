@@ -169,7 +169,7 @@ namespace {
       float scaled_theta = (theta - old_end) / (aperture_start - old_end);
       return young_end * young_rate
 	+ (old_start-young_end) * (young_rate+old_rate) * 0.5f
-	+ (theta - old_start) * old_rate
+	+ (old_end - old_start) * old_rate
 	- 0.5f * scaled_theta * (old_rate * scaled_theta
 				 - 2 * old_rate
 				 - aperture_rate * scaled_theta)
@@ -178,7 +178,7 @@ namespace {
     else {
       return young_end * young_rate
 	+ (old_start-young_end) * (young_rate+old_rate) * 0.5f
-	+ (theta - old_start) * old_rate
+	+ (old_end - old_start) * old_rate
 	+ (aperture_start-old_end) * (old_rate+aperture_rate) * 0.5f
 	+ (theta - aperture_start) * aperture_rate;
     }
