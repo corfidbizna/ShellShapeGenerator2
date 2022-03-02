@@ -3,6 +3,10 @@
 #include "ShellGenerator.h"
 
 namespace {
+  float powf_munged(float a, float b) {
+    if(a < 1.0f) return a;
+    else return powf_munged(a, b);
+  }
   void eval_segment(std::vector<FVector2D>& out,
                     FVector2D p0, FVector2D c0,
                     FVector2D c1, FVector2D p1,
@@ -246,15 +250,15 @@ void UShellGenerator::BeginGeneratingShell
   bg.desired_params.normal_growth_young = normal_growth_young;
   bg.desired_params.binormal_growth_young = binormal_growth_young;
   bg.desired_params.spiral_growth_young = spiral_growth_young;
-  bg.desired_params.young_end = powf(young_end, inverse_theta_exponent);
-  bg.desired_params.old_start = powf(old_start, inverse_theta_exponent);
+  bg.desired_params.young_end = powf_munged(young_end, inverse_theta_exponent);
+  bg.desired_params.old_start = powf_munged(old_start, inverse_theta_exponent);
   bg.desired_params.old_cross.curve = old_cross;
   bg.desired_params.old_grain.curve = old_grain;
   bg.desired_params.normal_growth_old = normal_growth_old;
   bg.desired_params.binormal_growth_old = binormal_growth_old;
   bg.desired_params.spiral_growth_old = spiral_growth_old;
-  bg.desired_params.old_end = powf(old_end, inverse_theta_exponent);
-  bg.desired_params.aperture_start = powf(aperture_start, inverse_theta_exponent);
+  bg.desired_params.old_end = powf_munged(old_end, inverse_theta_exponent);
+  bg.desired_params.aperture_start = powf_munged(aperture_start, inverse_theta_exponent);
   bg.desired_params.aperture_cross.curve = aperture_cross;
   bg.desired_params.aperture_grain.curve = aperture_grain;
   bg.desired_params.normal_growth_aperture = normal_growth_aperture;
@@ -307,7 +311,7 @@ void bg_gen_state::bg_thread_func() {
     TArray<FRadiusInfo> radius_info;
     radius_info.Reserve(p.radius_requests.Num());
     for(auto linear_theta : p.radius_requests) {
-      float theta = powf(linear_theta, p.theta_exponent);
+      float theta = powf_munged(linear_theta, p.theta_exponent);
       struct FRadiusInfo i;
       i.spiral_radius = p.get_tube_center_d(theta);
       i.tube_normal_radius = p.get_tube_normal_radius(theta);
@@ -340,7 +344,7 @@ void bg_gen_state::bg_thread_func() {
       p.build_shell_at(mesh, young_curve, old_curve, aperture_curve, temp,
 		       theta, 1.f);
       attach_shell_segment(mesh, true, young_curve.size());
-      float buff = fmax(p.length_per_iteration / fmax(1.f, p.get_tube_center_d(theta)), 0.01f);
+      float buff = fmax(p.length_per_iteration / fmax(1.f, p.get_tube_center_d(powf_munged(theta, p.theta_exponent))), 0.01f);
       theta += buff;
     }
     for(int i = 0; i < p.old_endcaps.Num(); ++i) {
@@ -419,7 +423,7 @@ std::vector<FVector2D> Curve::evaluate(int max_depth) const {
 }
 
 void shell_params::point_at(FBakedMesh& mesh, float theta) const {
-  float spiral_rad = get_tube_center_d(theta);
+  float spiral_rad = get_tube_center_d(powf_munged(theta, theta_exponent));
   float theta_radians = theta * -PI;
   float c = cos(theta_radians);
   float s = sin(theta_radians);
@@ -469,7 +473,7 @@ void shell_params::build_shell_at(FBakedMesh& mesh,
                                   const std::vector<FVector>& aperture_curve,
                                   std::vector<FVector>& temp,
                                   float linear_theta, float scale) const {
-  float theta = powf(linear_theta, theta_exponent);
+  float theta = powf_munged(linear_theta, theta_exponent);
   const std::vector<FVector>* curve = curve_at(young_curve, old_curve,
 					       aperture_curve, temp, theta);
   float tube_rad = get_tube_normal_radius(theta) * scale;
