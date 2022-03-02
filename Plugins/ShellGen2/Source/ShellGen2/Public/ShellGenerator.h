@@ -44,6 +44,7 @@ struct SHELLGEN2_API shell_params {
   float current_age;
   float final_age;
   float length_per_iteration;
+  float theta_exponent;
   int curve_subdivision;
   Curve young_cross = Curve(CurveType::Circle);
   Curve young_grain = Curve(CurveType::Flat);
@@ -178,7 +179,9 @@ class SHELLGEN2_API UShellGenerator : public UObject {
      UPARAM(DisplayName="Distance per iteration")
      float length_per_iteration = 0.1f,
      UPARAM(DisplayName="Curve subdivision iterations")
-     int curve_subdivision = 4
+     int curve_subdivision = 4,
+     UPARAM(DisplayName="Theta exponent")
+     float theta_exponent = 1.0
      );
   /**
    * Returns true if a shell is currently being generated in the background,
