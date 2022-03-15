@@ -241,7 +241,6 @@ void UShellGenerator::BeginGeneratingShell
   if(theta_exponent < 1.0f / 8.0f) theta_exponent = 1.0f / 8.0f;
   else if(theta_exponent > 8.0f) theta_exponent = 8.0f;
   bg.desired_params.theta_exponent = theta_exponent;
-  float inverse_theta_exponent = 1.0f / theta_exponent;
   bg.desired_params.starting_normal_rad = starting_normal_rad;
   bg.desired_params.starting_binormal_rad = starting_binormal_rad;
   bg.desired_params.starting_spiral_rad = starting_spiral_rad;
@@ -250,15 +249,15 @@ void UShellGenerator::BeginGeneratingShell
   bg.desired_params.normal_growth_young = normal_growth_young;
   bg.desired_params.binormal_growth_young = binormal_growth_young;
   bg.desired_params.spiral_growth_young = spiral_growth_young;
-  bg.desired_params.young_end = powf_munged(young_end, inverse_theta_exponent);
-  bg.desired_params.old_start = powf_munged(old_start, inverse_theta_exponent);
+  bg.desired_params.young_end = powf_munged(young_end, theta_exponent);
+  bg.desired_params.old_start = powf_munged(old_start, theta_exponent);
   bg.desired_params.old_cross.curve = old_cross;
   bg.desired_params.old_grain.curve = old_grain;
   bg.desired_params.normal_growth_old = normal_growth_old;
   bg.desired_params.binormal_growth_old = binormal_growth_old;
   bg.desired_params.spiral_growth_old = spiral_growth_old;
-  bg.desired_params.old_end = powf_munged(old_end, inverse_theta_exponent);
-  bg.desired_params.aperture_start = powf_munged(aperture_start, inverse_theta_exponent);
+  bg.desired_params.old_end = powf_munged(old_end, theta_exponent);
+  bg.desired_params.aperture_start = powf_munged(aperture_start, theta_exponent);
   bg.desired_params.aperture_cross.curve = aperture_cross;
   bg.desired_params.aperture_grain.curve = aperture_grain;
   bg.desired_params.normal_growth_aperture = normal_growth_aperture;
