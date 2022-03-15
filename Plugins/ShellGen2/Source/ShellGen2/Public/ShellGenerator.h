@@ -31,11 +31,15 @@ struct SHELLGEN2_API shell_params {
   float normal_growth_young;
   float binormal_growth_young;
   float spiral_growth_young;
+  float lin_young_end;
+  float lin_old_start;
   float young_end;
   float old_start;
   float normal_growth_old;
   float binormal_growth_old;
   float spiral_growth_old;
+  float lin_old_end;
+  float lin_aperture_start;
   float old_end;
   float aperture_start;
   float normal_growth_aperture;

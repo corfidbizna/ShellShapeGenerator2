@@ -249,6 +249,8 @@ void UShellGenerator::BeginGeneratingShell
   bg.desired_params.normal_growth_young = normal_growth_young;
   bg.desired_params.binormal_growth_young = binormal_growth_young;
   bg.desired_params.spiral_growth_young = spiral_growth_young;
+  bg.desired_params.lin_young_end = young_end;
+  bg.desired_params.lin_old_start = old_start;
   bg.desired_params.young_end = powf_munged(young_end, theta_exponent);
   bg.desired_params.old_start = powf_munged(old_start, theta_exponent);
   bg.desired_params.old_cross.curve = old_cross;
@@ -256,6 +258,8 @@ void UShellGenerator::BeginGeneratingShell
   bg.desired_params.normal_growth_old = normal_growth_old;
   bg.desired_params.binormal_growth_old = binormal_growth_old;
   bg.desired_params.spiral_growth_old = spiral_growth_old;
+  bg.desired_params.lin_old_end = old_end;
+  bg.desired_params.lin_aperture_start = aperture_start;
   bg.desired_params.old_end = powf_munged(old_end, theta_exponent);
   bg.desired_params.aperture_start = powf_munged(aperture_start, theta_exponent);
   bg.desired_params.aperture_cross.curve = aperture_cross;
@@ -555,9 +559,11 @@ float shell_params::get_tube_binormal_radius(float theta) const {
 
 float shell_params::get_spiral_radius(float theta) const {
   return starting_spiral_rad + young_old_curve(theta,
-                                               spiral_growth_young, young_end,
-                                               old_start, spiral_growth_old,
-                                               old_end, aperture_start,
+                                               spiral_growth_young,
+					       lin_young_end,
+                                               lin_old_start,
+					       spiral_growth_old,
+                                               lin_old_end, lin_aperture_start,
                                                spiral_growth_aperture);
 }
 
