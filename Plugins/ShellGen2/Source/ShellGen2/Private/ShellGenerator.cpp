@@ -494,7 +494,7 @@ void shell_params::build_shell_at(FBakedMesh& mesh,
 				in | transform_z);
     float v = i * v_mul;
     if(v > 1.f) v -= 2.f; // not >=
-    mesh.texcoords->emplace_back(theta, v);
+    mesh.texcoords->emplace_back(linear_theta, v);
   }
 }
 
