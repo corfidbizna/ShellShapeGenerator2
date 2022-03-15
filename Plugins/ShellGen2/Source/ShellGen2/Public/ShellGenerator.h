@@ -58,7 +58,7 @@ struct SHELLGEN2_API shell_params {
   float get_tube_normal_radius(float theta) const;
   float get_tube_binormal_radius(float theta) const;
   float get_spiral_radius(float theta) const;
-  float get_tube_center_d(float theta) const;
+  float get_tube_center_d(float linear_theta, float theta) const;
   const std::vector<FVector>* curve_at(const std::vector<FVector>& young_cross,
 				       const std::vector<FVector>& old_cross,
 				       const std::vector<FVector>& apert_cross,

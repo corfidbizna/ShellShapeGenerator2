@@ -312,7 +312,7 @@ void bg_gen_state::bg_thread_func() {
     for(auto linear_theta : p.radius_requests) {
       float theta = powf_munged(linear_theta, p.theta_exponent);
       struct FRadiusInfo i;
-      i.spiral_radius = p.get_tube_center_d(theta);
+      i.spiral_radius = p.get_tube_center_d(linear_theta, theta);
       i.tube_normal_radius = p.get_tube_normal_radius(theta);
       i.tube_binormal_radius = p.get_tube_binormal_radius(theta);
       auto cross_section = p.curve_at(young_curve, old_curve, aperture_curve,
@@ -343,7 +343,7 @@ void bg_gen_state::bg_thread_func() {
       p.build_shell_at(mesh, young_curve, old_curve, aperture_curve, temp,
 		       theta, 1.f);
       attach_shell_segment(mesh, true, young_curve.size());
-      float buff = fmax(p.length_per_iteration / fmax(1.f, p.get_tube_center_d(powf_munged(theta, p.theta_exponent))), 0.01f);
+      float buff = fmax(p.length_per_iteration / fmax(1.f, p.get_tube_center_d(theta, powf_munged(theta, p.theta_exponent))), 0.01f);
       theta += buff;
     }
     for(int i = 0; i < p.old_endcaps.Num(); ++i) {
@@ -422,7 +422,7 @@ std::vector<FVector2D> Curve::evaluate(int max_depth) const {
 }
 
 void shell_params::point_at(FBakedMesh& mesh, float theta) const {
-  float spiral_rad = get_tube_center_d(powf_munged(theta, theta_exponent));
+  float spiral_rad = get_tube_center_d(theta, powf_munged(theta, theta_exponent));
   float theta_radians = theta * -PI;
   float c = cos(theta_radians);
   float s = sin(theta_radians);
@@ -477,7 +477,7 @@ void shell_params::build_shell_at(FBakedMesh& mesh,
 					       aperture_curve, temp, theta);
   float tube_rad = get_tube_normal_radius(theta) * scale;
   float tube_width = get_tube_binormal_radius(theta) * scale;
-  float spiral_rad = get_tube_center_d(theta);
+  float spiral_rad = get_tube_center_d(linear_theta, theta);
   float theta_radians = linear_theta * -PI;
   float c = cos(theta_radians);
   float s = sin(theta_radians);
@@ -561,8 +561,8 @@ float shell_params::get_spiral_radius(float theta) const {
                                                spiral_growth_aperture);
 }
 
-float shell_params::get_tube_center_d(float theta) const {
-  return get_spiral_radius(theta) + get_tube_normal_radius(theta);
+float shell_params::get_tube_center_d(float linear_theta, float theta) const {
+  return get_spiral_radius(linear_theta) + get_tube_normal_radius(theta);
 }
 
 UShellGenerator* UShellGenerator::MakeShellGenerator() {
