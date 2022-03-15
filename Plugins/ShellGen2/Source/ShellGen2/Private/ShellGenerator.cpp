@@ -5,7 +5,7 @@
 namespace {
   float powf_munged(float a, float b) {
     if(a < 1.0f) return a;
-    else return powf_munged(a, b);
+    else return powf(a, b);
   }
   void eval_segment(std::vector<FVector2D>& out,
                     FVector2D p0, FVector2D c0,
