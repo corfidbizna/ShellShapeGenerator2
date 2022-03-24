@@ -42,5 +42,6 @@ UStaticMesh* UMakeStaticMeshLib::BakedMeshToStaticMesh(const FBakedMesh& in) {
   TArray<const FMeshDescription*> ugh;
   ugh.Emplace(&mdesc);
   ret->BuildFromMeshDescriptions(ugh);
+  ret->PostLoad();
   return ret;
 }
