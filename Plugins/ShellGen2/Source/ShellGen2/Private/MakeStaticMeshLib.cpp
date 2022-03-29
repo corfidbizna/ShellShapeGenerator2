@@ -17,7 +17,6 @@ UStaticMesh* UMakeStaticMeshLib::BakedMeshToStaticMesh(const FBakedMesh& in) {
   mdesc.ReserveNewVertices(vertices.size());
   mdesc.ReserveNewVertexInstances(vertices.size());
   mdesc.ReserveNewTriangles(indices.size()/3);
-  auto normals = in.calculate_normals();
   FMeshDescriptionBuilder builder;
   builder.SetMeshDescription(&mdesc);
   TArray<FVertexInstanceID> viid_map;
@@ -26,7 +25,8 @@ UStaticMesh* UMakeStaticMeshLib::BakedMeshToStaticMesh(const FBakedMesh& in) {
   for(int32_t n = 0; n < vertices.size(); ++n) {
     FVertexID vid = builder.AppendVertex(vertices[n]);
     FVertexInstanceID viid = builder.AppendInstance(vid);
-    builder.SetInstance(viid, texcoords[n], normals[n]);
+    // we'll build the normals later
+    builder.SetInstance(viid, texcoords[n], FVector(0.0f, 0.0f, 0.0f));
     viid_map[n] = viid;
   }
   for(int32_t n = 0; n < indices.size(); n += 3) {
@@ -39,6 +39,10 @@ UStaticMesh* UMakeStaticMeshLib::BakedMeshToStaticMesh(const FBakedMesh& in) {
   }
   UStaticMesh* ret = NewObject<UStaticMesh>();
   ret->StaticMaterials.Add(FStaticMaterial());
+  auto normals = mdesc.VertexInstanceAttributes().GetAttributesRef<FVector>(MeshAttribute::VertexInstance::Normal);
+  auto tangents = mdesc.VertexInstanceAttributes().GetAttributesRef<FVector>(MeshAttribute::VertexInstance::Tangent);
+  auto binormal_signs = mdesc.VertexInstanceAttributes().GetAttributesRef<float>(MeshAttribute::VertexInstance::BinormalSign);
+  in.build_tangent_space(viid_map, normals, tangents, binormal_signs);
   TArray<const FMeshDescription*> ugh;
   ugh.Emplace(&mdesc);
   ret->BuildFromMeshDescriptions(ugh);
