@@ -147,45 +147,38 @@ namespace {
     }
     return smooshed;
   }
-  float young_old_curve(float theta,
+  float young_old_curve(float base, float in_theta,
 			float young_rate, float young_end,
 			float old_start, float old_rate,
 			float old_end, float aperture_start,
 			float aperture_rate) {
-    if(theta < young_end)
-      return theta * young_rate;
-    else if(theta < old_start) {
-      // slope varies linearly from young (at young_end) to old (at old_start)
-      // and this is the integral of that, according to Wolfram Alpha...
-      float scaled_theta = (theta - young_end) / (old_start - young_end);
-      return young_end * young_rate
-	- 0.5f * scaled_theta * (young_rate * scaled_theta
-				 - 2 * young_rate
-				 - old_rate * scaled_theta)
-	* (old_start - young_end);
+    float theta, theta_scaled, left_coeff, right_coeff;
+    float ret = base * powf(young_rate, fmin(in_theta, old_start));
+    if(in_theta > old_start) {
+      theta = fmin(in_theta, young_end) - old_start;
+      theta_scaled = theta / (young_end - old_start);
+      right_coeff = (theta_scaled * theta_scaled) * 0.5f;
+      left_coeff = theta_scaled - right_coeff;
+      ret *= powf(young_rate, left_coeff)
+        * powf(old_rate, right_coeff);
+      if(in_theta > young_end) {
+        theta = fmin(in_theta, aperture_start) - young_end;
+        ret *= powf(old_rate, theta);
+        if(in_theta > aperture_start) {
+          theta = fmin(in_theta, old_end) - aperture_start;
+          theta_scaled = theta / (old_end - aperture_start);
+          right_coeff = (theta_scaled * theta_scaled) * 0.5f;
+          left_coeff = theta_scaled - right_coeff;
+          ret *= powf(old_rate, left_coeff)
+            * powf(aperture_rate, right_coeff);
+          if(in_theta > old_end) {
+            theta = in_theta - old_end;
+            ret *= powf(aperture_rate, theta);
+          }
+        }
+      }
     }
-    else if(theta < old_end) {
-      return young_end * young_rate
-	+ (old_start-young_end) * (young_rate+old_rate) * 0.5f
-	+ (theta - old_start) * old_rate;
-    }
-    else if(theta < aperture_start) {
-      float scaled_theta = (theta - old_end) / (aperture_start - old_end);
-      return young_end * young_rate
-	+ (old_start-young_end) * (young_rate+old_rate) * 0.5f
-	+ (old_end - old_start) * old_rate
-	- 0.5f * scaled_theta * (old_rate * scaled_theta
-				 - 2 * old_rate
-				 - aperture_rate * scaled_theta)
-	* (aperture_start - old_end);
-    }
-    else {
-      return young_end * young_rate
-	+ (old_start-young_end) * (young_rate+old_rate) * 0.5f
-	+ (old_end - old_start) * old_rate
-	+ (aperture_start-old_end) * (old_rate+aperture_rate) * 0.5f
-	+ (theta - aperture_start) * aperture_rate;
-    }
+    return ret;
   }
 }
 
@@ -542,29 +535,29 @@ void bg_gen_state::attach_shell_segment(FBakedMesh& mesh, bool is_full, unsigned
 }
 
 float shell_params::get_tube_normal_radius(float theta) const {
-  return starting_normal_rad + young_old_curve(theta,
-                                               normal_growth_young, young_end,
-                                               old_start, normal_growth_old,
-                                               old_end, aperture_start,
-                                               normal_growth_aperture);
+  return young_old_curve(starting_normal_rad, theta,
+                         normal_growth_young, young_end,
+                         old_start, normal_growth_old,
+                         old_end, aperture_start,
+                         normal_growth_aperture);
 }
 
 float shell_params::get_tube_binormal_radius(float theta) const {
-  return starting_binormal_rad + young_old_curve(theta,
-                                                 binormal_growth_young, young_end,
-                                                 old_start, binormal_growth_old,
-                                                 old_end, aperture_start,
-                                                 binormal_growth_aperture);
+  return young_old_curve(starting_binormal_rad, theta,
+                         binormal_growth_young, young_end,
+                         old_start, binormal_growth_old,
+                         old_end, aperture_start,
+                         binormal_growth_aperture);
 }
 
 float shell_params::get_spiral_radius(float theta) const {
-  return starting_spiral_rad + young_old_curve(theta,
-                                               spiral_growth_young,
-					       lin_young_end,
-                                               lin_old_start,
-					       spiral_growth_old,
-                                               lin_old_end, lin_aperture_start,
-                                               spiral_growth_aperture);
+  return young_old_curve(starting_spiral_rad, theta,
+                         spiral_growth_young,
+                         lin_young_end,
+                         lin_old_start,
+                         spiral_growth_old,
+                         lin_old_end, lin_aperture_start,
+                         spiral_growth_aperture);
 }
 
 float shell_params::get_tube_center_d(float linear_theta, float theta) const {
