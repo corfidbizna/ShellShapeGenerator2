@@ -159,8 +159,8 @@ namespace {
       theta_scaled = theta / (old_start - young_end);
       right_coeff = (theta_scaled * theta_scaled) * 0.5f;
       left_coeff = theta_scaled - right_coeff;
-      ret *= powf(young_rate, left_coeff)
-        * powf(old_rate, right_coeff);
+      ret *= powf(young_rate, left_coeff * (old_start - young_end))
+        * powf(old_rate, right_coeff * (old_start - young_end));
       if(in_theta > old_start) {
         theta = fmin(in_theta, old_end) - old_start;
         ret *= powf(old_rate, theta);
@@ -169,8 +169,8 @@ namespace {
           theta_scaled = theta / (aperture_start - old_end);
           right_coeff = (theta_scaled * theta_scaled) * 0.5f;
           left_coeff = theta_scaled - right_coeff;
-          ret *= powf(old_rate, left_coeff)
-            * powf(aperture_rate, right_coeff);
+          ret *= powf(old_rate, left_coeff * (aperture_start - old_end))
+            * powf(aperture_rate, right_coeff * (aperture_start - old_end));
           if(in_theta > aperture_start) {
             theta = in_theta - aperture_start;
             ret *= powf(aperture_rate, theta);
