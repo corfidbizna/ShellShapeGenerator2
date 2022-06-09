@@ -2,6 +2,8 @@
 
 #include "ShellGenerator.h"
 
+#include <cassert>
+
 namespace {
   float powf_munged(float a, float b) {
     if(a < 1.0f) return a;
