@@ -41,6 +41,8 @@ public class ShellGen2 : ModuleRules
 				"MeshConversion",
 				"StaticMeshDescription",
 				"MeshDescription",
+				"zlib",
+				"UElibPNG",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
