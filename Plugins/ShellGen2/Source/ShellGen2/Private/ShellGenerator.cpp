@@ -182,9 +182,6 @@ namespace {
   }
 }
 
-UShellGenerator::UShellGenerator(const FObjectInitializer& initializer)
-  : Super(initializer) {}
-
 UShellGenerator::~UShellGenerator() {
   if(thread) {
     {
