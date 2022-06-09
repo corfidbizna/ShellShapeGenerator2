@@ -106,8 +106,6 @@ class SHELLGEN2_API UShellGenerator : public UObject {
   std::unique_ptr<std::thread> thread;
   bg_gen_state bg;
   UShellGenerator() {}
-  UShellGenerator(const FObjectInitializer& initializer)
-    : Super(initializer) {}
   virtual ~UShellGenerator();
   /**
    * Make a new Shell Generator.

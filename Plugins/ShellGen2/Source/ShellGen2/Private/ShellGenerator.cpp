@@ -194,6 +194,9 @@ UShellGenerator::~UShellGenerator() {
   }
 }
 
+UShellGenerator::UShellGenerator(const FObjectInitializer& initializer)
+  : Super(initializer) {}
+
 void UShellGenerator::BeginGeneratingShell
 (float starting_normal_rad,
  float starting_binormal_rad,
