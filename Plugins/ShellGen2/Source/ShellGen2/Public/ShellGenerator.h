@@ -1,6 +1,7 @@
 #pragma once
 
 #include <thread>
+#include <mutex>
 
 #include "CoreMinimal.h"
 #include "BakedMesh.h"
