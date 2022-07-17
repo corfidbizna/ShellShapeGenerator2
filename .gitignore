@@ -12,7 +12,7 @@ Saved
 *.suo
 *.xcodeproj
 *.xcworkspace
-Builds
+BuiltVersions
 Build
 ExportedShells/**
 .DS_Store
