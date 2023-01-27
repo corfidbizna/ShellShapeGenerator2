@@ -6,7 +6,7 @@
 #include "UObject/NoExportTypes.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "BakedMesh.h"
-#include "OBJWriter.generated.h"
+#include "ObjWriter.generated.h"
 
 /**
  * 
@@ -15,7 +15,8 @@ UCLASS(BlueprintType, Category = "Shell Shape Generator")
 class SHELLGEN2_API UObjWriter : public UBlueprintFunctionLibrary {
   GENERATED_BODY()
 public:
-  UFUNCTION(BlueprintCallable, Category="Shell Shape Generator")
+  UFUNCTION(BlueprintCallable, Category="Shell Shape Generator",
+	    DisplayName="Output OBJ File")
   static void OutputObjFile(const TArray<FString>& comments,
                             const TArray<FBakedMesh>& meshes,
                             const TArray<FTransform>& transforms,

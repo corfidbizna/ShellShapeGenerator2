@@ -229,7 +229,8 @@ void UShellGenerator::BeginGeneratingShell
  const TArray<float>& radius_requests,
  float length_per_iteration,
  int curve_subdivision,
- float theta_exponent) {
+ float theta_exponent,
+ float spiral_offset_constant) {
   std::unique_lock<std::mutex> lock(bg.mutex);
   ++bg.generation;
   // oh boy
@@ -269,6 +270,7 @@ void UShellGenerator::BeginGeneratingShell
   bg.desired_params.radius_requests = radius_requests;
   bg.desired_params.young_endcaps = young_endcaps;
   bg.desired_params.old_endcaps = old_endcaps;
+  bg.desired_params.spiral_offset_constant = spiral_offset_constant;
   bg.params_available = true;
   if(thread == nullptr)
     thread = std::make_unique<std::thread>(&bg_gen_state::bg_thread_func, &bg);
@@ -342,8 +344,7 @@ void bg_gen_state::bg_thread_func() {
       p.build_shell_at(mesh, young_curve, old_curve, aperture_curve, temp,
 		       theta, 1.f);
       attach_shell_segment(mesh, true, young_curve.size());
-      float buff = fmax(p.length_per_iteration / fmax(1.f, p.get_tube_center_d(theta, powf_munged(theta, p.theta_exponent))), 0.01f);
-      theta += buff;
+      float buff = fmin(fmax(p.length_per_iteration / fmax(1.f, p.get_tube_center_d(theta, powf_munged(theta, p.theta_exponent))), 0.01f), (float)(M_PI/3.0));      theta += buff;
     }
     for(int i = 0; i < p.old_endcaps.Num(); ++i) {
       const auto& v = p.old_endcaps[i];
@@ -559,7 +560,7 @@ float shell_params::get_spiral_radius(float theta) const {
                          lin_old_start,
                          spiral_growth_old,
                          lin_old_end, lin_aperture_start,
-                         spiral_growth_aperture);
+                         spiral_growth_aperture) + spiral_offset_constant;
 }
 
 float shell_params::get_tube_center_d(float linear_theta, float theta) const {

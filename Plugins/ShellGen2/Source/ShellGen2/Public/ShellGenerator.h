@@ -60,6 +60,7 @@ struct SHELLGEN2_API shell_params {
   TArray<FVector2D> young_endcaps;
   TArray<FVector2D> old_endcaps;
   TArray<float> radius_requests;
+  float spiral_offset_constant;
   float get_tube_normal_radius(float theta) const;
   float get_tube_binormal_radius(float theta) const;
   float get_spiral_radius(float theta) const;
@@ -186,7 +187,9 @@ class SHELLGEN2_API UShellGenerator : public UObject {
      UPARAM(DisplayName="Curve subdivision iterations")
      int curve_subdivision = 4,
      UPARAM(DisplayName="Theta exponent")
-     float theta_exponent = 1.0
+     float theta_exponent = 1.0,
+     UPARAM(DisplayName="Fixed offset to umbilical radius, bypassing growth math")
+     float spiral_offset_constant = 0.0
      );
   /**
    * Returns true if a shell is currently being generated in the background,
