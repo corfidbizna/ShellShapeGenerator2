@@ -344,7 +344,8 @@ void bg_gen_state::bg_thread_func() {
       p.build_shell_at(mesh, young_curve, old_curve, aperture_curve, temp,
 		       theta, 1.f);
       attach_shell_segment(mesh, true, young_curve.size());
-      float buff = fmin(fmax(p.length_per_iteration / fmax(1.f, p.get_tube_center_d(theta, powf_munged(theta, p.theta_exponent))), 0.01f), (float)(M_PI/3.0));      theta += buff;
+      float buff = fmin(fmax(p.length_per_iteration / fmax(1.f, p.get_tube_center_d(theta, powf_munged(theta, p.theta_exponent))), 0.01f), 3.14159265358979323846264328f/3.0f);
+      theta += buff;
     }
     for(int i = 0; i < p.old_endcaps.Num(); ++i) {
       const auto& v = p.old_endcaps[i];
