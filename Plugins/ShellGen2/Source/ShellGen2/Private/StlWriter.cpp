@@ -9,7 +9,7 @@ template<class T> static inline T maybe_swap(T in) {
     return in;
 }
 
-static FString cook_path(const FString& filename) {
+static FString cook_path_2(const FString& filename) {
   return FPaths::ProjectContentDir() + TEXT("/") + filename;
 }
 
@@ -107,7 +107,7 @@ void UStlWriter::OutputAsciiStlFile(const TArray<FString>& comments,
   o << "\nendsolid GeneratedShell\n";
   auto all = o.str();
   IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
-  FString path = cook_path(filename);
+  FString path = cook_path_2(filename);
   if(!path.EndsWith(FString(".stl"))) path += ".stl";
   std::unique_ptr<IFileHandle> file(PlatformFile.OpenWrite(*path));
   if(!file || !file->Write(reinterpret_cast<const uint8_t*>(all.data()),
@@ -182,7 +182,7 @@ void UStlWriter::OutputBinaryStlFile(const TArray<FString>& comments,
   }
   auto all = o.str();
   IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
-  FString path = cook_path(filename);
+  FString path = cook_path_2(filename);
   if(!path.EndsWith(FString(".stl"))) path += ".stl";
   std::unique_ptr<IFileHandle> file(PlatformFile.OpenWrite(*path));
   if(!file || !file->Write(reinterpret_cast<const uint8_t*>(all.data()),
