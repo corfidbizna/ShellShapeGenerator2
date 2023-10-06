@@ -115,9 +115,11 @@ namespace {
         else {
           auto& second_from_last = grain_sorted[grain_sorted.size()-2];
           auto& last = grain_sorted[grain_sorted.size()-1];
-          float y_per_x = (last.Y - second_from_last.Y)
-            / (last.X - second_from_last.X);
-          last.Y = (last.X - second_from_last.X) * y_per_x;
+          if last.X != second_from_last.X) {
+            float y_per_x = (last.Y - second_from_last.Y)
+              / (last.X - second_from_last.X);
+            last.Y = second_from_last.Y + (last.X - second_from_last.X) * y_per_x;
+          }
           last.X = nu.X;
         }
       }
