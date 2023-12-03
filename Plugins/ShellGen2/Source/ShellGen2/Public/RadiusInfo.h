@@ -35,6 +35,6 @@ struct SHELLGEN2_API FRadiusInfo {
   UPROPERTY(EditAnywhere, BlueprintReadWrite)float tube_binormal_radius;
   /** Cross section at the given theta, untransformed and centered around
       0,0. */
-  UPROPERTY(EditAnywhere, BlueprintReadWrite) TArray<FVector2D> cross_section;
+  UPROPERTY(EditAnywhere, BlueprintReadWrite) TArray<FVector> cross_section;
   FRadiusInfo() {}
 };
